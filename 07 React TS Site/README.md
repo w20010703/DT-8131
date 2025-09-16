@@ -76,57 +76,6 @@ which npm
 
 **All checks should pass before proceeding with React TypeScript setup.**
 
-## If You Cloned This Project
-
-If you've cloned this repository and want to follow along with the examples, here's what you need to do:
-
-### Quick Start Commands
-
-```bash
-# Navigate to the React TS directory
-cd "06 React TS"
-
-# Create a new React app with TypeScript (this will create a new folder)
-npx create-react-app my-react-ts-app --template typescript
-
-# Navigate into your new app
-cd my-react-ts-app
-
-# Start the development server
-npm start
-```
-
-### Alternative: Using the Manual Setup
-
-If you want to follow the manual setup tutorial in this README:
-
-```bash
-# Navigate to the React TS directory
-cd "06 React TS"
-
-# Create a new project directory
-mkdir my-manual-react-app
-cd my-manual-react-app
-
-# Follow the manual setup steps in this README starting from "Step 2: Initialize npm Project"
-```
-
-### What You'll Get
-
-After running the commands above, you'll have:
-- A fully functional React TypeScript application
-- Development server running on `http://localhost:3000`
-- Hot reloading enabled (changes appear instantly)
-- TypeScript compilation and error checking
-- All necessary dependencies installed
-
-### Next Steps After Setup
-
-1. **Open your code editor** (VS Code recommended) in the project folder
-2. **Explore the project structure** - you'll see folders like `src/`, `public/`, etc.
-3. **Start editing** - try modifying `src/App.tsx` to see changes in real-time
-4. **Follow the TypeScript examples** in this README to learn more
-
 ## Method 1: Using Create React App (Recommended for Beginners)
 
 ### Step 1: Create a New React App with TypeScript
