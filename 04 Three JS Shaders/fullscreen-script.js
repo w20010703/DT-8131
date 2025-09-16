@@ -74,12 +74,23 @@ function createNetworkSpheres() {
         "Object", "Entity", "Concept", "Idea", "Form", "Structure",
         "Pattern", "System", "Process", "Function", "Purpose", "Meaning",
         "Relation", "Connection", "Network", "Graph", "Node", "Edge",
-        "Space", "Time", "Dimension", "Scale", "Level", "Hierarchy"
+        "Space", "Time", "Dimension", "Scale", "Level", "Hierarchy",
+        "Category", "Class", "Type", "Kind", "Instance", "Example",
+        "Property", "Attribute", "Feature", "Characteristic", "Quality",
+        "Value", "Measure", "Quantity", "Amount", "Degree", "Extent",
+        "Boundary", "Limit", "Constraint", "Rule", "Principle", "Law",
+        "Method", "Technique", "Approach", "Strategy", "Solution", "Answer",
+        "Question", "Problem", "Challenge", "Issue", "Concern", "Matter",
+        "Context", "Environment", "Setting", "Situation", "Condition", "State",
+        "Change", "Transformation", "Evolution", "Development", "Growth", "Progress",
+        "Interaction", "Communication", "Exchange", "Transfer", "Flow", "Movement",
+        "Energy", "Force", "Power", "Strength", "Intensity", "Magnitude",
+        "Frequency", "Rate", "Speed", "Velocity", "Acceleration", "Momentum"
     ];
     
-    const numSpheres = 15;
+    const numSpheres = 80;
     const sphereRadius = 0.3;
-    const connectionDistance = 4;
+    const connectionDistance = 5;
     
     // Create spheres
     for (let i = 0; i < numSpheres; i++) {
@@ -125,7 +136,7 @@ function createTextLabel(sphereData) {
     canvas.height = 64;
     
     // Set font and text properties
-    context.font = '16px "Helvetica Neue", Helvetica, Arial, sans-serif';
+    context.font = '14px "Helvetica Neue", Helvetica, Arial, sans-serif';
     context.fillStyle = '#000000';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
@@ -146,7 +157,7 @@ function createTextLabel(sphereData) {
     
     // Create sprite
     const sprite = new THREE.Sprite(spriteMaterial);
-    sprite.scale.set(2, 0.5, 1);
+    sprite.scale.set(1.8, 0.4, 1);
     sprite.position.copy(sphereData.mesh.position);
     sprite.position.y += 0.8; // Position above sphere
     
@@ -154,6 +165,11 @@ function createTextLabel(sphereData) {
 }
 
 function createConnections(maxDistance) {
+    // Track connections for each sphere
+    const sphereConnections = new Array(spheres.length).fill(0).map(() => []);
+    const minConnections = 3;
+    
+    // First pass: Create connections based on distance
     for (let i = 0; i < spheres.length; i++) {
         for (let j = i + 1; j < spheres.length; j++) {
             const sphere1 = spheres[i];
@@ -168,23 +184,65 @@ function createConnections(maxDistance) {
             
             // Create connection if spheres are close enough
             if (distance < maxDistance) {
-                const geometry = new THREE.BufferGeometry();
-                const positions = new Float32Array([
-                    sphere1.position.x, sphere1.position.y, sphere1.position.z,
-                    sphere2.position.x, sphere2.position.y, sphere2.position.z
-                ]);
-                
-                geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-                
-                const material = new THREE.LineBasicMaterial({ 
-                    color: 0x000000 // Black lines
-                });
-                
-                const line = new THREE.Line(geometry, material);
-                connections.push(line);
-                fullscreenScene.add(line);
+                createConnection(i, j);
+                sphereConnections[i].push(j);
+                sphereConnections[j].push(i);
             }
         }
+    }
+    
+    // Second pass: Ensure each sphere has at least minConnections
+    for (let i = 0; i < spheres.length; i++) {
+        while (sphereConnections[i].length < minConnections) {
+            // Find the closest unconnected sphere
+            let closestSphere = -1;
+            let closestDistance = Infinity;
+            
+            for (let j = 0; j < spheres.length; j++) {
+                if (i !== j && !sphereConnections[i].includes(j)) {
+                    const distance = Math.sqrt(
+                        Math.pow(spheres[i].position.x - spheres[j].position.x, 2) +
+                        Math.pow(spheres[i].position.y - spheres[j].position.y, 2) +
+                        Math.pow(spheres[i].position.z - spheres[j].position.z, 2)
+                    );
+                    
+                    if (distance < closestDistance) {
+                        closestDistance = distance;
+                        closestSphere = j;
+                    }
+                }
+            }
+            
+            // Create connection to closest sphere
+            if (closestSphere !== -1) {
+                createConnection(i, closestSphere);
+                sphereConnections[i].push(closestSphere);
+                sphereConnections[closestSphere].push(i);
+            } else {
+                break; // No more spheres to connect to
+            }
+        }
+    }
+    
+    function createConnection(i, j) {
+        const sphere1 = spheres[i];
+        const sphere2 = spheres[j];
+        
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array([
+            sphere1.position.x, sphere1.position.y, sphere1.position.z,
+            sphere2.position.x, sphere2.position.y, sphere2.position.z
+        ]);
+        
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        
+        const material = new THREE.LineBasicMaterial({ 
+            color: 0x000000 // Black lines
+        });
+        
+        const line = new THREE.Line(geometry, material);
+        connections.push(line);
+        fullscreenScene.add(line);
     }
 }
 
