@@ -74,7 +74,7 @@ function createThreeSpheres() {
     // Define shader materials
     const flatColorMaterial = createFlatColorShader();
     const gradientMaterial = createGradientShader();
-    const kernelMaterial = createKernelShader();
+    const kernelMaterial = createFresnelShader();
     
     // Create three spheres aligned horizontally
     const sphereConfigs = [
@@ -91,7 +91,7 @@ function createThreeSpheres() {
         {
             position: { x: spacing, y: 0, z: 0 },
             material: kernelMaterial,
-            label: "Kernel Effect Shader"
+            label: "Fresnel Effect Shader"
         }
     ];
     
@@ -107,12 +107,11 @@ function createThreeSpheres() {
             // Flat color - bright red
             sphereMaterial.uniforms.uColor.value = new THREE.Color(0xff4444);
         } else if (index === 1) {
-            // Gradient - blue to purple
-            sphereMaterial.uniforms.uColor1.value = new THREE.Color(0x4444ff);
-            sphereMaterial.uniforms.uColor2.value = new THREE.Color(0xff44ff);
+            // Gradient - red to white (already set in shader)
+            // Colors are already set in the shader material
         } else {
-            // Kernel - bright green
-            sphereMaterial.uniforms.uColor.value = new THREE.Color(0x44ff44);
+            // Fresnel - red to white (already set in shader)
+            // Colors are already set in the shader material
         }
         
         const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
@@ -253,14 +252,12 @@ function createFlatColorShader() {
 
 function createGradientShader() {
     const vertexShader = `
-        varying vec3 vNormal;
-        varying vec3 vPosition;
-        varying vec2 vUv;
+        varying vec3 vWorldPosition;
         
         void main() {
-            vNormal = normalize(normalMatrix * normal);
-            vPosition = position;
-            vUv = uv;
+            // Transform position to world space
+            vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+            vWorldPosition = worldPosition.xyz;
             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
     `;
@@ -268,102 +265,75 @@ function createGradientShader() {
     const fragmentShader = `
         uniform vec3 uColor1;
         uniform vec3 uColor2;
-        uniform float uTime;
-        varying vec3 vNormal;
-        varying vec3 vPosition;
-        varying vec2 vUv;
+        varying vec3 vWorldPosition;
         
         void main() {
-            // Create gradient based on UV coordinates and time
-            float gradientFactor = sin(vUv.y * 3.14159 + uTime * 0.5) * 0.5 + 0.5;
+            // Create gradient based on world space Y coordinate
+            // Map Y from -1 to 1 range to 0 to 1 for gradient factor
+            float gradientFactor = (vWorldPosition.y + 1.0) * 0.5;
+            gradientFactor = clamp(gradientFactor, 0.0, 1.0);
+            
+            // Mix between red (bottom) and white (top)
             vec3 gradientColor = mix(uColor1, uColor2, gradientFactor);
             
-            // Add some lighting
-            vec3 lightDirection = normalize(vec3(1.0, 1.0, 1.0));
-            float lightIntensity = max(dot(vNormal, lightDirection), 0.2);
-            
-            vec3 finalColor = gradientColor * lightIntensity;
-            gl_FragColor = vec4(finalColor, 1.0);
+            // Completely unlit - just the gradient color
+            gl_FragColor = vec4(gradientColor, 1.0);
         }
     `;
     
     return new THREE.ShaderMaterial({
         uniforms: {
-            uColor1: { value: new THREE.Color(0xff0000) },
-            uColor2: { value: new THREE.Color(0x0000ff) },
-            uTime: { value: 0.0 }
+            uColor1: { value: new THREE.Color(0xff0000) }, // Red
+            uColor2: { value: new THREE.Color(0xffffff) }   // White
         },
         vertexShader: vertexShader,
         fragmentShader: fragmentShader
     });
 }
 
-function createKernelShader() {
+function createFresnelShader() {
     const vertexShader = `
         varying vec3 vNormal;
-        varying vec3 vPosition;
-        varying vec2 vUv;
+        varying vec3 vWorldPosition;
         
         void main() {
             vNormal = normalize(normalMatrix * normal);
-            vPosition = position;
-            vUv = uv;
+            vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+            vWorldPosition = worldPosition.xyz;
             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
     `;
     
     const fragmentShader = `
-        uniform vec3 uColor;
-        uniform float uTime;
+        uniform vec3 uColor1;
+        uniform vec3 uColor2;
         varying vec3 vNormal;
-        varying vec3 vPosition;
-        varying vec2 vUv;
-        
-        // Simple noise function
-        float noise(vec2 st) {
-            return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
-        }
-        
-        // Fractal noise
-        float fbm(vec2 st) {
-            float value = 0.0;
-            float amplitude = 0.5;
-            float frequency = 0.0;
-            
-            for (int i = 0; i < 4; i++) {
-                value += amplitude * noise(st);
-                st *= 2.0;
-                amplitude *= 0.5;
-            }
-            return value;
-        }
+        varying vec3 vWorldPosition;
         
         void main() {
-            // Create kernel-like pattern using noise
-            vec2 st = vUv * 8.0;
-            float pattern = fbm(st + uTime * 0.5);
+            // Calculate view direction from camera to fragment
+            vec3 viewDirection = normalize(cameraPosition - vWorldPosition);
             
-            // Create kernel effect
-            float kernel = sin(pattern * 10.0) * 0.5 + 0.5;
-            kernel = pow(kernel, 2.0);
+            // Calculate Fresnel effect based on viewing angle
+            // When viewing angle is perpendicular to normal (edge), Fresnel is high
+            // When viewing angle is parallel to normal (center), Fresnel is low
+            float fresnel = 1.0 - max(dot(vNormal, viewDirection), 0.0);
             
-            // Mix base color with kernel pattern
-            vec3 kernelColor = uColor * (0.3 + kernel * 0.7);
+            // Enhance the Fresnel effect with power function
+            fresnel = pow(fresnel, 2.0);
             
-            // Add some rim lighting
-            vec3 viewDirection = normalize(cameraPosition - vPosition);
-            float rim = 1.0 - max(dot(vNormal, viewDirection), 0.0);
-            rim = pow(rim, 2.0);
+            // Mix between red (edges) and white (center)
+            vec3 fresnelColor = mix(uColor2, uColor1, fresnel);
             
-            vec3 finalColor = kernelColor + rim * uColor * 0.5;
-            gl_FragColor = vec4(finalColor, 1.0);
+            // Completely unlit - just the Fresnel gradient
+            gl_FragColor = vec4(fresnelColor, 1.0);
         }
     `;
     
     return new THREE.ShaderMaterial({
         uniforms: {
-            uColor: { value: new THREE.Color(0x00ff00) },
-            uTime: { value: 0.0 }
+            uColor1: { value: new THREE.Color(0xff0000) }, // Red (edges)
+            uColor2: { value: new THREE.Color(0xffffff) }   // White (center)
         },
         vertexShader: vertexShader,
         fragmentShader: fragmentShader
