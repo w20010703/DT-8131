@@ -29,7 +29,7 @@
     <p><strong>Members:</strong> Chris Ye (interaction design), Julia Chen (robotics & AI), Richard Li (systems design)</p>
 
     <!-- IDEA1 -->
-    <div class="section-title">IDEA1: Dating App & Social Anxiety</div>
+    <div class="section-title">IDEA: Dating App & Social Anxiety</div>
 
     <h5>Project Question</h5>
     <p>How can we help socially anxious dating app users take their passive online engagement?</p>
@@ -83,60 +83,16 @@
 
     <br /><br /><br />
 
-    <!-- IDEA2 -->
-    <div class="section-title">IDEA2: Multi-Robot Collaboration</div>
-
-    <h5>Project Question</h5>
-    <p>How might we enable multiple robots to divide tasks and collaborate efficiently in order to accomplish a complex overall goal?</p>
-
-    <h5>State of Knowledge of the Field</h5>
-    <h6>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Current Knowledge</h6>
-    <ul>
-      <li>Multi-robot systems exist in logistics (warehouse robots, swarm drones).</li>
-      <li>Current coordination methods: centralized task allocation vs decentralized swarm intelligence.</li>
-      <li>Household robots (Roomba, robotic vacuums) typically act independently, not collaboratively.</li>
-      <li>Research explores communication protocols, spatial awareness, and role assignment.</li>
-    </ul>
-    <h6>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Areas to Develop</h6>
-    <ul>
-      <li>Cross-over between modular robotics and swarm behavior.</li>
-      <li>New forms of human-robot orchestration</li>
-      <li>Adaptive, task-specific division of labor where robots learn to negotiate roles dynamically.</li>
-    </ul>
-
-    <h5>Map of Community of Practice</h5>
-    <ul>
-      <li>Amazon Robotics, Boston Dynamics – applied multi-robot systems in warehouses and logistics.</li>
-      <li>Academic labs in robotics (MIT CSAIL, ETH Zurich, CMU Robotics Institute).</li>
-      <li>Open-source communities around ROS2 multi-robot frameworks.</li>
-    </ul>
-
-    <h5>Research Methods</h5>
-    <ul>
-      <li>Simulation of multi-robot tasks in ROS2/RVIZ.</li>
-      <li>Prototyping decentralized communication protocols.</li>
-      <li>Experimental task allocation studies.</li>
-    </ul>
-
-    <h5>Technology Ecosystem Diagram</h5>
-    <ul>
-      <li><strong>Software:</strong> ROS2, RVIZ, Python.</li>
-      <li><strong>Hardware:</strong> Multiple ground robots (e.g., TurtleBot), networking equipment, sensors (LiDAR, cameras).</li>
-    </ul>
-
-    <img src="img/tech2.png" style="width: 28%;">
-    <img src="img/concept2.png" style="width: 44%;">
-    <img src="img/concept22.png" style="width: 20.5%;">
-
-    <h5>Intent of Purpose to ‘Radical Prototype’</h5>
-    <p>The prototype that challenges centralized robot control.</p>
-    <h6>Speculative radical prototype idea</h6>
-    <p>
-      A decentralized “robot orchestra” where each robot functions like an instrument in a larger score.
-      For example, in a cleaning swarm, one robot sprays, another brushes, and another vacuums.
-      Each module can operate independently or in combination.
-    </p>
+    <h5>Ontology Graph</h5>
+    <div class="fullscreen-section">
+      <button id="fullscreen-btn" class="fullscreen-button" style="background-color: white; padding: 10px; font-size: 16px; border-radius: 8px;">
+        Enter Fullscreen 3D
+      </button>
+    </div>
 
   </main>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="ontology_script.js"></script>
 </body>
 </html>
