@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cornell Tech Design Tech Project</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="left">Cornell Tech</div>
+    <div class="center">
+      Design Tech<br>
+      <span>Project Archive</span>
+    </div>
+    <div class="right"><a href="#">About</a></div>
+  </header>
+
+  <main>
+    <div class="project-meta">2025</div>
+    <div class="project-title">Design Tech Project</div>
+    <div class="course-info">DESIGN 8131 Specialization Project 1</div>
+    <div class="project-subtitle">Chris Ye, Julia Chen, Richard Li</div>
+    <div class="advisor">Advisor<br><strong>Design Tech Faculty</strong></div>
+
+    <!-- Team Composition -->
+    <div class="section-title">Team Composition</div>
+    <p><strong>Team Name:</strong> ?????</p>
+    <p><strong>Members:</strong> Chris Ye (interaction design), Julia Chen (robotics & AI), Richard Li (systems design)</p>
+
+    <!-- IDEA1 -->
+    <div class="section-title">IDEA: Dating App & Social Anxiety</div>
+
+    <h5>Project Question</h5>
+    <p>How can we help socially anxious dating app users take their passive online engagement?</p>
+
+    <h5>State of Knowledge of the Field</h5>
+    <h6>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Current Knowledge</h6>
+    <ul>
+      <li>Dating apps are dominated by digital-only interactions (text, swipe-based).</li>
+      <li>Socially anxious users often create accounts but avoid initiating or replying, leading to disengagement.</li>
+      <li>Existing solutions (icebreaker prompts, algorithmic matching, “boosts”) mainly stay within digital space and don’t address the leap into physical/social presence.</li>
+    </ul>
+    <h6>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Areas to Develop</h6>
+    <ul>
+      <li>Explore hybrid digital-physical triggers</li>
+      <li>Understand the behavioral psychology of anxiety reduction in first-contact moments.</li>
+    </ul>
+
+    <h5>Map of Community of Practice</h5>
+    <ul>
+      <li>Hinge, Bumble, Tinder – commercial dating platforms experimenting with prompts and safety features.</li>
+      <li>Academic researchers in HCI studying digital intimacy and social anxiety.</li>
+      <li>Therapists and support groups focusing on exposure therapy for social anxiety.</li>
+    </ul>
+
+    <h5>Research Methods</h5>
+    <ul>
+      <li>User interviews with socially anxious dating app users.</li>
+      <li>Behavioral observation of online/offline engagement transitions.</li>
+      <li>Prototyping and user testing hybrid interaction models.</li>
+    </ul>
+
+    <h5>Technology Ecosystem Diagram</h5>
+    <ul>
+      <li><strong>Software:</strong> Mobile app (iOS/Android), Python backend server.</li>
+      <li><strong>Hardware:</strong> Smartphones, optional IoT devices for physical triggers (e.g., RFID tags, wearables).</li>
+    </ul>
+
+    <img src="img/concept1.png" style="width: 35%;">
+    <img src="img/concept12.png" style="width: 20%;">
+    <img src="img/tech1.png" style="width: 35%;">
+
+
+    <h5>Intent of Purpose to ‘Radical Prototype’</h5>
+    <p>A prototype could break the digital-only model of dating apps.</p>
+    <h6>Speculative radical prototype idea</h6>
+    <p>
+      A Dating App version of Tamagotchi, where each user has a virtual pet that can only be retrieved after meeting their match offline.
+      The pet “visits” another user’s home during pairing, forcing the first encounter to happen in person.
+      The shared pet becomes a playful icebreaker, turning the first physical meeting into a natural social interaction.
+    </p>
+
+    <br /><br /><br />
+
+    <h5>Ontology Graph</h5>
+    <div class="fullscreen-section">
+      <button id="fullscreen-btn" class="fullscreen-button" style="background-color: white; padding: 10px; font-size: 16px; border-radius: 8px;">
+        Enter Fullscreen 3D
+      </button>
+    </div>
+
+  </main>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="ontology_script.js"></script>
+</body>
+</html>
