@@ -900,3 +900,16 @@ iframe.wait-autoplay {
 .gnxt:hover:after {
   filter: blur(2px);
 }
+
+
+.h2-small-title {
+  font-size: large;
+  width: 60%;
+}
+.h2-small-content {
+  font-size: medium;
+  width: 60%;
+}
+.h2-small-img {
+  width: 60%;
+}
